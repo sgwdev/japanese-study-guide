@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Data.Config;
+using Infrastructure.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(KanjiConfiguration).Assembly);
+            builder.UseSnakeCaseConvention();
         }
     }
 }
