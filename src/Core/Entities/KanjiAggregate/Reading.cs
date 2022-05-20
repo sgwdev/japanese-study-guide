@@ -8,6 +8,7 @@ namespace Core.Entities.KanjiAggregate
 {
     public class Reading : BaseEntity
     {
+        public int KanjiId { get; set; }
         public int TypeId { get; set; }
         public string Label { get; set; }
 

@@ -21,6 +21,7 @@ namespace Infrastructure.Data
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(KanjiConfiguration).Assembly);
             builder.UseSnakeCaseConvention();
+            builder.Seed();
         }
     }
 }
