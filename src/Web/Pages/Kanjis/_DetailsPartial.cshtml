@@ -1,0 +1,16 @@
+﻿@using Core.Entities.KanjiAggregate;
+@model Kanji
+@using Core;
+@{
+}
+
+<div>
+    @Model.Character
+    @foreach (Reading reading in Model.Readings.OrderBy(k => k.TypeId))
+    {
+        <div>
+            [@reading.Type.Label]
+            @(reading.Type.Id == Core.Constants.ReadingTypes.On ? Tools.ToKatakana(reading.Label) : reading.Label)
+        </div>
+    }
+</div>

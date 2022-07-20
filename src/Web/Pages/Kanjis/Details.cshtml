@@ -1,0 +1,12 @@
+﻿@page "/kanji/{id:int}"
+@model Web.Pages.Kanjis.DetailsModel
+@{
+}
+
+<div>
+    <h3>Details</h3>
+    <partial name="_DetailsPartial" model="@Model.Kanji" />
+</div>
+
+<a class="nav-link" asp-page="Edit" asp-route-id="@Model.Kanji.Id">Edit</a>
+<a class="nav-link" asp-page="Index">Back</a>

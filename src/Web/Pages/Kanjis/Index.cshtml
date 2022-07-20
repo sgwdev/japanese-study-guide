@@ -1,0 +1,18 @@
+﻿@page "/kanji"
+@model Web.Pages.Kanjis.IndexModel
+@using Core.Entities.KanjiAggregate
+@{
+}
+
+<h3>Kanji List</h3>
+<a class="nav-link" asp-page="Add">Add kanji</a>
+
+<div>
+    @foreach (Kanji kanji in Model.KanjiList)
+    {
+        <hr />
+        <partial name="_DetailsPartial" model="@kanji" />
+        <a class="nav-link" asp-page="Details" asp-route-id="@kanji.Id">View</a>
+        <a class="nav-link" asp-page="Edit" asp-route-id="@kanji.Id">Edit</a>
+    }
+</div>

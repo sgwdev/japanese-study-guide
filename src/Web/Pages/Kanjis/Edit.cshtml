@@ -1,0 +1,72 @@
+﻿@page "/kanji/edit/{id:int}"
+@model Web.Pages.Kanjis.EditModel
+@{
+}
+
+<div>
+    <h3>Kanji Edit</h3>
+
+    <div>
+        Character: @Model.Kanji.Character
+
+        <input type="hidden" asp-for="Kanji.Id" />
+        @Html.HiddenFor(model => Model.Kanji.Id)
+        @Html.HiddenFor(model => Model.Kanji.Character)
+    </div>
+
+    <form method="post" id="kanji-form">
+        <div class="form-group">
+            <div id="reading-list">
+                <div>
+                    <span>Readings: </span>
+                    <a href="#" id="add" style="margin-left:100px;">Add reading</a>
+                </div>
+
+                @{
+                    if (Model.Kanji.Readings.Count > 0)
+                    {
+                        for (int i = 0; i < Model.Kanji.Readings.Count; i++)
+                        {
+                            <div>
+                                <select asp-for="Kanji.Readings[i].TypeId" asp-items="@(new SelectList(Model.ReadingTypes, "Id", "Label"))"></select>
+                                <input type="text" class="items" asp-for="Kanji.Readings[i].Label" />
+                                <input type="hidden" asp-for="Kanji.Readings[i].Id" />
+                                <span asp-validation-for="Kanji.Readings[i].TypeId"></span>
+                                <span asp-validation-for="Kanji.Readings[i].Label"></span>
+                            </div>
+                        }
+                    }
+                }
+            </div>              
+        </div>
+        <input type="submit" value="Update" />
+    </form>
+    <a class="nav-link" asp-page="Index">Back</a>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(function () {
+            $("#add").click(function (e) {
+                e.preventDefault();
+
+                var i = $(".items").length;
+
+                var readingTypeDropDownHTML = `@{<select asp-for="Kanji.Readings[0].TypeId" asp-items="@(new SelectList(Model.ReadingTypes, "Id", "Label"))"></select> }`;
+                var readingTypeDropDown = $.parseHTML(readingTypeDropDownHTML);
+                $(readingTypeDropDown).attr("id", $(readingTypeDropDown).attr("id").replace("0", i));
+                $(readingTypeDropDown).attr("name", 'Kanji.Readings[' + i + '].TypeId');
+                $("option", readingTypeDropDown).removeAttr("selected");
+
+                var readingTextboxHTML = '<input type="text" class="items" name="Kanji.Readings[' + i + '].Label" />';
+                var readingTextbox = $.parseHTML(readingTextboxHTML);
+
+                var div = $("<div>");
+                $(div).append(readingTypeDropDown);
+                $(div).append(readingTextbox);
+                $("#reading-list").append(div);
+            });
+        });
+    </script>
+}
