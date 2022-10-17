@@ -16,8 +16,7 @@ namespace Infrastructure.Data.Extensions
                 return input;
             }         
 
-            var startUnderscores = Regex.Match(input, @"^_+");
-            return startUnderscores + Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
+            return Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
         }
     }
 }
