@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using Core.Entities.KanjiAggregate;
 using Core.Interfaces;
@@ -12,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.WebEncoders;
 
 namespace Web
 {
@@ -29,6 +32,15 @@ namespace Web
         {
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddRazorPages();
+
+            // Required to not automatically encode noma char
+            services.Configure<WebEncoderOptions>(options =>
+            {
+                options.TextEncoderSettings = new TextEncoderSettings(
+                    UnicodeRanges.BasicLatin,
+                    UnicodeRanges.CjkSymbolsandPunctuation);
+            });
+
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 

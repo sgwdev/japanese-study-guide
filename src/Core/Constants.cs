@@ -14,5 +14,8 @@ namespace Core
             public const int Kun = 2;
             public const int Special = 3;
         }
+
+        // Kanji repetition char / 同の字点
+        public const char Noma = '々';
     }
 }

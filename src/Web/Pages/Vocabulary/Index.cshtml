@@ -1,0 +1,21 @@
+﻿@page
+@model Web.Pages.Vocabulary.IndexModel
+@using Core.Entities.VocabularyAggregate;
+@{
+}
+
+<h3>Vocabulary</h3>
+<a class="nav-link" asp-page="Add">Add word</a>
+
+<div>
+    @foreach (Word word in Model.WordList)
+    {
+        <hr/>
+        <div>
+            @word.Label
+            @word.Translation
+        </div>
+        <a class="nav-link" asp-page="Details" asp-route-id="@word.Id">View</a>
+        <a class="nav-link" asp-page="Edit" asp-route-id="@word.Id">Edit</a>
+    }
+</div>

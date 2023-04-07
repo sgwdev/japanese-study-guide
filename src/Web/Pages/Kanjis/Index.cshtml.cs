@@ -22,7 +22,7 @@ namespace Web.Pages.Kanjis
 
         public void OnGet()
         {
-            KanjiList = _kanjiRepository.GetList(new KanjiWithReadingsSpecification());
+            KanjiList = _kanjiRepository.GetList(new KanjiWithWordsSpecification());
         }
     }
 }

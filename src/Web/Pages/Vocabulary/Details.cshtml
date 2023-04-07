@@ -1,0 +1,48 @@
+﻿@page "{id:int}"
+@model Web.Pages.Vocabulary.DetailsModel
+@using Core; 
+@using Core.Entities.VocabularyAggregate;
+@{
+}
+
+<h3>Details</h3>
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <label>@Model.Word.Label</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label>Pronunciation</label>
+        </div>
+        <div class="col-md-2">
+            <label>Translation</label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label>@Model.Word.Pronunciation</label>
+        </div>
+        <div class="col-md-2">
+            <label>@Model.Word.Translation</label>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="card" style="width: 18rem;">
+        <div class="card-header">
+            Readings
+        </div>
+        <ul class="list-group list-group-flush">
+            @foreach (WordReading wr in Model.Word.Readings.OrderBy(wr => wr.Order))
+            {
+                <li class="list-group-item">@wr.Reading.Kanji.Character : [@wr.Reading.Type.Label] @wr.Reading.Label</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<a class="nav-link" asp-page="Edit" asp-route-id="@Model.Word.Id">Edit</a>
+<a class="nav-link" asp-page="Index">Back</a>

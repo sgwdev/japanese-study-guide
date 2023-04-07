@@ -35,6 +35,7 @@ namespace Web.Pages.Kanjis
 
         public IActionResult OnPost()
         {
+            // Avoid mismatches between input fields and error messages after filtering invalid readings
             foreach (string key in ModelState.Keys.Where(x => x.StartsWith("Kanji.Readings")).ToList())
             {
                 ModelState.Remove(key);
@@ -96,17 +97,17 @@ namespace Web.Pages.Kanjis
                 {
                     if (Kanji.Readings[i].TypeId != Constants.ReadingTypes.On && Kanji.Readings[i].TypeId != Constants.ReadingTypes.Kun)
                     {
-                        ModelState.AddModelError($"Kanji.Readings[{i}].TypeId", $"A reading type is required.");
+                        ModelState.AddModelError($"Kanji.Readings[{i}].TypeId", "A reading type is required.");
                     }
 
                     if (string.IsNullOrEmpty(Kanji.Readings[i].Label))
                     {
-                        ModelState.AddModelError($"Kanji.Readings[{i}].Label", $"A label is required.");
+                        ModelState.AddModelError($"Kanji.Readings[{i}].Label", "A label is required.");
                     }
 
                     if (!Tools.IsInHiragana(Kanji.Readings[i].Label))
                     {
-                        ModelState.AddModelError($"Kanji.Readings[{i}].Label", $"Label must be written in hiragana.");
+                        ModelState.AddModelError($"Kanji.Readings[{i}].Label", "Label must be written in hiragana.");
                     }
                 }
             }

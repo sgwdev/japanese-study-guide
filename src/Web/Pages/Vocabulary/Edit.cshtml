@@ -1,0 +1,92 @@
+﻿@page "{id:int}"
+@model Web.Pages.Vocabulary.EditModel
+@using Core;
+@{
+}
+
+<div>
+    <h3>Word Edit</h3>
+    <form method="post">
+        <div class="form-group" id="WordForm">
+            <div class="form-row">
+                <div class="form-group col-md-2 disabled">
+                    <label>Word</label>
+                    <label class="form-control-plaintext">@Model.Word.Label</label>
+                </div>
+                <div class="form-group col-md-2">
+                    <label>Translation</label>
+                    <input type="text" asp-for="Word.Translation" class="form-control" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>Pronunciation</label>
+                    <div class="input-group">
+                        <input type="text" id="WordReading" asp-for="Word.Pronunciation" class="form-control" />
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="IsSpecialReading" asp-for="IsSpecialReading" />
+                                <label class="form-check-label pl-2" for="IsSpecialReading">Special</label>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Word.Pronunciation"></span>
+                </div>
+            </div>
+
+            <input type="hidden" asp-for="Word.Id" value="@Model.Word.Id" />
+            <input type="hidden" asp-for="Word.Label" value="@Model.Word.Label" />
+        </div>
+        <div id="reading-list" style="display:@(Model.IsSpecialReading ? "none" : "")">
+            @{
+                for (int i = 0; i < Model.Word.Label.Length; i++)
+                {
+                        <div id="reading_@i" class="form-group row">
+                            <label class="col-form-label col-md-1">@Model.Word.Label[i] :</label>
+
+                                @{
+                                    if (Model.Word.Label[i] == Constants.Noma)
+                                    {
+                                        // Order = i - 1 + 1
+                                        <label id="noma_@i" class="col-form-label col-md-3">@Model.Word.Readings.Where(wr => wr.Order == i).Single().Reading.Label</label>                                                                                
+                                    }
+                                    else
+                                    {
+                                        if (i < Model.Word.Label.Length - 1 && Model.Word.Label[i + 1] == Constants.Noma)
+                                        {
+                                            int index = i + 1;
+                                            <select asp-for="Word.Readings[i].ReadingId" asp-items="@(new SelectList(Model.WordKanji[i].Readings, "Id", "Label"))" onchange="$('#noma_@index').html($('#reading_@i select option:selected').text());" class="custom-select col-md-3"></select>
+                                        }
+                                        else
+                                        {
+                                            <select asp-for="Word.Readings[i].ReadingId" asp-items="@(new SelectList(Model.WordKanji[i].Readings, "Id", "Label"))" class="custom-select col-md-3"></select>
+                                        }
+                                        <input type="hidden" asp-for="Word.Readings[i].Order" value="@(i+1)" />
+                                    }
+                                }
+                        </div>
+                }
+            }
+        </div>
+        <input type="submit" value="Save" />
+        <a class="nav-link" asp-page="Index">Back</a>
+    </form>
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(function () {
+            $('#IsSpecialReading').on('change', function () {
+                if ($('#IsSpecialReading').prop('checked')) {
+                    $('#reading-list').hide();
+                }
+                else {
+                    $('#reading-list').show();
+                }
+            });
+        }());
+
+    </script>
+}

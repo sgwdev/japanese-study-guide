@@ -2,31 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Entities.KanjiAggregate;
+using Core;
+using Core.Entities.VocabularyAggregate;
 using Core.Interfaces;
 using Infrastructure.Data.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Web.Pages.Kanjis
+namespace Web.Pages.Vocabulary
 {
     public class DetailsModel : PageModel
     {
-        private IRepository<Kanji> _repository { get; set; }
-        public Kanji Kanji { get; set; }
+        private IRepository<Word> _repository { get; set; }
+        public Word Word { get; set; }
 
-        public DetailsModel(IRepository<Kanji> repository)
+        public DetailsModel(IRepository<Word> wordRepository)
         {
-            _repository = repository;
+            this._repository = wordRepository;
         }
 
         public IActionResult OnGet(int id)
         {
-            if (id > 0)
+            if(id > 0)
             {
-                Kanji = _repository.Get(new KanjiWithWordsSpecification(id));
+                Word = _repository.Get(new WordWithReadingsSpecification(id));
 
-                if(Kanji != null)
+                if(Word != null)
                 {
                     return Page();
                 }

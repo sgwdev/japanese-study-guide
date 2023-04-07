@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Entities.VocabularyAggregate;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace Core.Entities.KanjiAggregate
         public string Label { get; set; }
 
         public ReadingType Type { get; set; }
+        public Kanji Kanji { get; set; }
+        public List<WordReading> Words { get; set; }
 
         public override bool Equals(object obj)
         {
