@@ -1,0 +1,28 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    @{
+                        var currentRoute = ViewContext.RouteData.Values["page"].ToString().Split('/');
+                        int main = currentRoute.Length - 2;
+                    }
+
+                    @switch (currentRoute[1])
+                    {
+                        case "Kanjis":
+                            <li class="breadcrumb-item @(currentRoute[main] == "Kanjis" ? "active" : "")" aria-current="page"><a asp-page="/Kanjis/Index" class="@(currentRoute[main] == "Kanjis" ? "text-reset" : null)">Kanji</a></li>
+                            break;
+                        case "Vocabulary":
+                            <li class="breadcrumb-item @(currentRoute[main] == "Vocabulary" ?  "active" : "")" aria-current="page"><a asp-page="/Vocabulary/Index" class="@(currentRoute[main] == "Vocabulary" ? "text-reset" : null)">Vocabulary</a></li>
+                            <li class="breadcrumb-item @(currentRoute[main] == "Lists" ?  "active" : "")" aria-current="page"><a asp-page="/Vocabulary/Lists/Index" class="@(currentRoute[main] == "Lists" ? "text-reset" : null)">Lists</a></li>
+                            break;
+                        default:
+                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                            break;
+                    }
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>

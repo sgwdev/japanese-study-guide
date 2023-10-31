@@ -13,5 +13,6 @@ namespace Core.Entities.VocabularyAggregate
         public string Pronunciation { get; set; }
 
         public List<WordReading> Readings { get; set; }
+        public List<WordList> WordLists { get; set; }
     }
 }

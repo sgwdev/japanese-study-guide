@@ -49,6 +49,11 @@ namespace Infrastructure.Data
             _dbContext.Update(entity);
         }
 
+        public void Delete(T entity)
+        {
+            _dbContext.Remove(entity);
+        }
+
         public void Save()
         {
             _dbContext.SaveChanges();

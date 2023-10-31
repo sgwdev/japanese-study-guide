@@ -21,6 +21,8 @@ namespace Core.Interfaces
 
         public void Update(T entity);
 
+        public void Delete(T entity);
+
         public void Save();
     }
 }

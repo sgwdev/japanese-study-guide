@@ -25,5 +25,10 @@ namespace Infrastructure.Data.Specifications
         {
             Criteria = (w => w.Label == label);
         }
+
+        public WordWithReadingsSpecification(List<int> wordsId) :this()
+        {
+            Criteria = (w => wordsId.Contains(w.Id));
+        }
     }
 }

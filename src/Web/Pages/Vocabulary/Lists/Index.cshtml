@@ -1,0 +1,55 @@
+﻿@page
+@model Web.Pages.Vocabulary.Lists.IndexModel
+@using Core.Entities.VocabularyAggregate;
+@{
+
+}
+
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-md-4">
+            <h3>Vocabulary lists</h3>
+        </div>
+        <div class="col-md-4 text-right">
+            <a class="btn btn-primary" asp-page="Add">Create vocabulary list</a>
+        </div>
+    </div>
+</div>
+
+<hr />
+<div class="accordion" id="wordListAccordion">
+    @foreach (WordList wordList in Model.WordLists)
+    {
+        <div class="card">
+            <div class="card-header" id="heading-@wordList.Id">              
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#wl-@wordList.Id" aria-expanded="false" aria-controls="wl-@wordList.Id">
+                                        @wordList.Name <span class="badge badge-primary badge-pill">@wordList.Words.Count</span>
+                                    </button>
+                                </h2>
+                            </div>
+                            <div class="col-sm-1">
+                                <a class="btn btn-primary" asp-page="Details" asp-route-id="@wordList.Id">Details</a>
+                            </div>
+                            <div class="col-sm-1">
+                                <a class="btn btn-primary" asp-page="Edit" asp-route-id="@wordList.Id">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div id="wl-@wordList.Id" class="collapse" aria-labelledby="heading-@wordList.Id" data-parent="#wordListAccordion">
+                <ul class="list-group list-group-flush">
+                    @foreach(Word word in wordList.Words)
+                    {
+                        <a class="list-group-item list-group-item-action" asp-page="../Details" asp-route-id="@word.Id">
+                            <span class="ml-4">@word.Label</span>
+                        </a>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div>
