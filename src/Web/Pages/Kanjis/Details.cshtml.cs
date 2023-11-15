@@ -25,6 +25,7 @@ namespace Web.Pages.Kanjis
             if (id > 0)
             {
                 Kanji = _repository.Get(new KanjiWithWordsSpecification(id));
+                Kanji.Readings = Kanji.Readings.OrderBy(k => k.TypeId).ToList();
 
                 if(Kanji != null)
                 {

@@ -4,18 +4,35 @@
 @{
 }
 
-<h3>Vocabulary</h3>
-<a class="nav-link" asp-page="Add">Add word</a>
-
-<div>
-    @foreach (Word word in Model.WordList)
-    {
-        <hr/>
-        <div>
-            @word.Label
-            @word.Translation
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-sm-4">
+            <h3>Vocabulary</h3>
         </div>
-        <a class="nav-link" asp-page="Details" asp-route-id="@word.Id">View</a>
-        <a class="nav-link" asp-page="Edit" asp-route-id="@word.Id">Edit</a>
-    }
+        <div class="col-sm-4 text-right">
+            <a class="btn btn-primary" asp-page="Add">Add Word</a>
+        </div>
+    </div>
+</div>
+
+<hr />
+<div>
+    <ul class="list-group">
+            @foreach (Word word in Model.Words)
+            {
+                <li class="list-group-item">
+                    <div class="row justify-content-center">
+                        <div class="col-sm my-auto">
+                        <h6 class="mb-0">@(string.IsNullOrEmpty(word.Translation) ? word.Label : $"{word.Label} : {word.Translation}")</h6>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-primary" asp-page="Details" asp-route-id="@word.Id">Details</a>
+                        </div>
+                        <div class="col-md-1">
+                            <a class="btn btn-primary" asp-page="Edit" asp-route-id="@word.Id">Edit</a>
+                        </div>
+                    </div>
+                </li>
+            }
+    </ul>
 </div>

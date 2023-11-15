@@ -4,40 +4,62 @@
 @{
 }
 
-<div>
-    <h3>Kanji</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>New Kanji</h3>
+        </div>
+    </div>
+</div>
 
+<hr />
+<div class="container">
     <form method="post" id="kanji-form">
-        <div class="form-group">
-            <div>
-                Character: <input type="text" asp-for="Kanji.Character" />
-                <span asp-validation-for="Kanji.Character"></span>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="kanji">Character</label>
+                <input type="text" asp-for="Kanji.Character" id="kanji" class="form-control" />
+                <span asp-validation-for="Kanji.Character" class="error"></span>
             </div>
-            <div id="reading-list" style="margin-top: 10px;">
-                <div>
-                    <span>Readings: </span>
-                    <a href="#" id="add" style="margin-left:100px;">Add reading</a>
+        </div>
+        <div class="form-row">
+            <div class="col-md-3">
+                <div class="row justify-content-between mb-3">
+                    <div class="col-md my-auto">
+                        <span>Readings</span>
+                    </div>
+                    <div class="col-md text-right">
+                        <button id="add" class="btn btn-primary">Add reading</button>
+                    </div>
                 </div>
-
+            </div>           
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6" id="reading-list">
                 @{
                     if (Model.Kanji.Readings.Count > 0)
                     {
                         for (int i = 0; i < Model.Kanji.Readings.Count; i++)
                         {
-                            <div>
-                                <select asp-for="Kanji.Readings[i].TypeId" asp-items="@(new SelectList(Model.ReadingTypes, "Id", "Label"))"></select>
-                                <input type="text" class="items" asp-for="Kanji.Readings[i].Label" />
-                                <span asp-validation-for="Kanji.Readings[i].TypeId"></span>
-                                <span asp-validation-for="Kanji.Readings[i].Label"></span>
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <select asp-for="Kanji.Readings[i].TypeId" asp-items="@(new SelectList(Model.ReadingTypes, "Id", "Label"))" class="form-control"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="items form-control" asp-for="Kanji.Readings[i].Label" />
+                                </div>
                             </div>
+                            <span asp-validation-for="Kanji.Readings[i].TypeId" class="error"></span>
+                            <span asp-validation-for="Kanji.Readings[i].Label" class="error"></span>
                         }
                     }
                 }
-            </div>
-        </div>
-        <input type="submit" value="Add" />
+            </div>        
+        </div>   
+        
+        <input class="btn btn-primary" type="submit" value="Add" />
+        <a class="btn btn-secondary" asp-page="Index">Back</a>
     </form>
-    <a class="nav-link" asp-page="Index">Back</a>
 </div>
 
 @section Scripts
@@ -49,19 +71,25 @@
 
                 var i = $(".items").length;
 
-                var readingTypeDropDownHTML = `@{<select asp-for="Kanji.Readings[0].TypeId" asp-items="@(new SelectList(Model.ReadingTypes, "Id", "Label"))"></select> }`;
+                var readingTypeDropDownHTML = `@{<select asp-for="Kanji.Readings[0].TypeId" asp-items="@(new SelectList(Model.ReadingTypes, "Id", "Label"))" class="form-control"></select> }`;
                 var readingTypeDropDown = $.parseHTML(readingTypeDropDownHTML);
-                $(readingTypeDropDown).attr("id", $(readingTypeDropDown).attr("id").replace("0",i));
+                $(readingTypeDropDown).attr("id", $(readingTypeDropDown).attr("id").replace("0", i));
                 $(readingTypeDropDown).attr("name", 'Kanji.Readings[' + i + '].TypeId');
                 $("option", readingTypeDropDown).removeAttr("selected");
 
-                var readingTextboxHTML = '<input type="text" class="items" name="Kanji.Readings[' + i + '].Label" />';
+                var readingTextboxHTML = '<input type="text" class="items form-control" name="Kanji.Readings[' + i + '].Label" />';
                 var readingTextbox = $.parseHTML(readingTextboxHTML);
+                
+                var readingTypeDiv = $('<div class="col-md-2">');
+                $(readingTypeDiv).append(readingTypeDropDown);
+                
+                var readingDiv = $('<div class="col-md-4">');
+                $(readingDiv).append(readingTextbox);
 
-                var div = $("<div>");
-                $(div).append(readingTypeDropDown);
-                $(div).append(readingTextbox);
-                $("#reading-list").append(div);
+                var mainDiv = $('<div class="form-row mt-1">');
+                $(mainDiv).append(readingTypeDiv);
+                $(mainDiv).append(readingDiv);
+                $("#reading-list").append(mainDiv);
             });
         });
     </script>

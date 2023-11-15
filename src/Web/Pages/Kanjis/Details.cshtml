@@ -1,12 +1,65 @@
 ﻿@page "/kanji/{id:int}"
 @model Web.Pages.Kanjis.DetailsModel
+@using Core.Entities.KanjiAggregate;
+@using Core;
 @{
 }
 
-<div>
-    <h3>Details</h3>
-    <partial name="_DetailsPartial" model="@Model.Kanji" />
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Kanji Details</h3>
+        </div>
+    </div>
 </div>
 
-<a class="nav-link" asp-page="Edit" asp-route-id="@Model.Kanji.Id">Edit</a>
-<a class="nav-link" asp-page="Index">Back</a>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <span class="large-kanji">@Model.Kanji.Character</span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Readings
+                </div>
+                <ul class="list-group list-group-flush">
+                    @for (int i = 0; i < Model.Kanji.Readings.Count; i++)
+                    {
+                        int currentReadingType = Model.Kanji.Readings[i].TypeId;
+
+                        <li class="list-group-item">
+                            @{
+                                while (i < Model.Kanji.Readings.Count && Model.Kanji.Readings[i].TypeId == currentReadingType)
+                                {
+                                    Reading reading = Model.Kanji.Readings[i];
+                                    i++;
+
+                                    <div>
+                                        <span>
+                                            [@reading.Type.Label] @(reading.Type.Id == Core.Constants.ReadingTypes.On ? Tools.ToKatakana(reading.Label) : reading.Label)
+                                            @if (reading.Type.Id == Core.Constants.ReadingTypes.Special)
+                                            {
+                                                <text>(@String.Join(", ", reading.Words.Select(wr => wr.Word.Label).ToList()))</text>
+                                            }
+                                        </span>
+                                    </div>
+                                }
+                                i--;
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>          
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mt-3">
+            <a class="btn btn-primary" asp-page="Edit" asp-route-id="@Model.Kanji.Id">Edit</a>
+            <a class="btn btn-secondary" asp-page="Index">Back</a>
+        </div>
+    </div>
+</div>

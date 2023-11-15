@@ -5,44 +5,46 @@
 @{
 }
 
-<h3>Details</h3>
-<div>
+<div class="container">
     <div class="row">
         <div class="col-md-4">
-            <label>@Model.Word.Label</label>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label>Pronunciation</label>
-        </div>
-        <div class="col-md-2">
-            <label>Translation</label>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label>@Model.Word.Pronunciation</label>
-        </div>
-        <div class="col-md-2">
-            <label>@Model.Word.Translation</label>
+            <h3>Details</h3>
         </div>
     </div>
 </div>
 
-<div>
-    <div class="card" style="width: 18rem;">
-        <div class="card-header">
-            Readings
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-auto">
+            <span><ruby><rb class="large-kanji">@Model.Word.Label</rb><rt class="large-furigana">@Model.Word.Pronunciation</rt></ruby></span>
         </div>
-        <ul class="list-group list-group-flush">
-            @foreach (WordReading wr in Model.Word.Readings.OrderBy(wr => wr.Order))
-            {
-                <li class="list-group-item">@wr.Reading.Kanji.Character : [@wr.Reading.Type.Label] @wr.Reading.Label</li>
-            }
-        </ul>
+        <div class="col-md-auto my-auto">
+            <span style="font-size:1.2rem; font-style:italic;">@Model.Word.Translation</span>
+        </div>
+    </div>
+    <div class="row mt-1">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Readings
+                </div>
+                <ul class="list-group list-group-flush">
+                    @foreach (WordReading wr in Model.Word.Readings.OrderBy(wr => wr.Order))
+                    {
+                        <li class="list-group-item">@wr.Reading.Kanji.Character : [@wr.Reading.Type.Label] @wr.Reading.Label</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mt-3">
+            <a class="btn btn-primary" asp-page="Edit" asp-route-id="@Model.Word.Id">Edit</a>
+            <a class="btn btn-secondary" asp-page="Index">Back</a>
+        </div>
     </div>
 </div>
 
-<a class="nav-link" asp-page="Edit" asp-route-id="@Model.Word.Id">Edit</a>
-<a class="nav-link" asp-page="Index">Back</a>
+
+

@@ -4,73 +4,84 @@
 @{
 }
 
-<div>
-    <h3>New Word</h3>
-    <form method="post">
-        <div id="WordForm" class="form-group">
-            <div class="form-row">
-                <div class="form-group col-md-2">
-                    <label>Word</label>
-                    <input type="text" asp-for="Word.Label" class="form-control" />
-                    <span asp-validation-for="Word.Label"></span>
-                </div>
-                <div class="form-group col-md-2">
-                    <label>Translation</label>
-                    <input type="text" asp-for="Word.Translation" class="form-control" />
-                </div>
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>New Word</h3>
+        </div>
+    </div>
+</div>
 
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label>Pronunciation</label>
-                    <div class="input-group">
-                        <input type="text" id="WordReading" asp-for="Word.Pronunciation" class="form-control" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="IsSpecialReading" asp-for="IsSpecialReading" />
-                                <label class="form-check-label pl-2" for="IsSpecialReading">Special</label>
-                            </div>
-                        </div>
-                    </div>
-                    <span asp-validation-for="Word.Pronunciation"></span>
-                </div>
+<hr />
+<div class="container">
+    <form method="post">
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <label>Word</label>
+                <input type="text" asp-for="Word.Label" class="form-control" />
+                <span asp-validation-for="Word.Label" class="error"></span>
+            </div>
+            <div class="form-group col-md-2">
+                <label>Translation</label>
+                <input type="text" asp-for="Word.Translation" class="form-control" />
             </div>
         </div>
-
-        <div id="reading-list" style="display:@(Model.IsSpecialReading ? "none" : "")">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Pronunciation</label>
+                <div class="input-group">
+                    <input type="text" id="WordReading" asp-for="Word.Pronunciation" class="form-control" />
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <input type="checkbox" id="IsSpecialReading" asp-for="IsSpecialReading" />
+                            <label class="form-check-label pl-2" for="IsSpecialReading">Special</label>
+                        </div>
+                    </div>
+                </div>
+                <span asp-validation-for="Word.Pronunciation" class="error"></span>
+            </div>
+        </div>
+        <div class="form-row">
+            <div id="reading-list" class="form-group col-md-4" style="display: @(Model.IsSpecialReading ? "none" : null)">
             @if (Model.Word != null && Model.Word.Readings.Count > 0)
             {
                 for (int i = 0; i < Model.Word.Label.Length; i++)
                 {
-                    <div id="reading_@i" class="form-group row">
-                        <label class="col-form-label col-md-1">@Model.Word.Label[i] :</label>
-
+                    <div id="reading_@i" class="form-row justify-content-md-end">
+                        <div class="col-form-label col-md-2">
+                            <label>@Model.Word.Label[i] :</label>
+                        </div>
                         @{
                             if (Model.Word.Label[i] == Constants.Noma)
                             {
-                                <label id="noma_@i" class="col-form-label col-md-3">@(Model.WordKanji[i-1].Readings.Where(r => r.Id == Model.Word.Readings[i-1].ReadingId).Single().Label)</label>
+                                <div class="col-form-label col-md-9 pl-3">
+                                    <label id="noma_@i">@(Model.WordKanji[i-1].Readings.Where(r => r.Id == Model.Word.Readings[i-1].ReadingId).Single().Label)</label>
+                                </div>
                             }
                             else
                             {
-                                if (i < Model.Word.Label.Length - 1 && Model.Word.Label[i + 1] == Constants.Noma)
+                                <div class="col-md-9">
+                                @if (i < Model.Word.Label.Length - 1 && Model.Word.Label[i + 1] == Constants.Noma)
                                 {
                                     int index = i + 1;
-                                    <select asp-for="Word.Readings[i].ReadingId" asp-items="@(new SelectList(Model.WordKanji[i].Readings, "Id", "Label"))" onchange="$('#noma_@index').html($('#reading_@i select option:selected').text());" class="custom-select col-md-3"></select>
+                                    <select asp-for="Word.Readings[i].ReadingId" asp-items="@(new SelectList(Model.WordKanji[i].Readings, "Id", "Label"))" onchange="$('#noma_@index').html($('#reading_@i select option:selected').text());" class="form-control"></select>
                                 }
                                 else
                                 {
-                                    <select asp-for="Word.Readings[i].ReadingId" asp-items="@(new SelectList(Model.WordKanji[i].Readings, "Id", "Label"))" class="custom-select col-md-3"></select>
+                                    <select asp-for="Word.Readings[i].ReadingId" asp-items="@(new SelectList(Model.WordKanji[i].Readings, "Id", "Label"))" class="form-control"></select>
                                 }
-                                <input type="hidden" asp-for="Word.Readings[i].Order" value="@(i+1)" />
+                                    <input type="hidden" asp-for="Word.Readings[i].Order" value="@(i+1)" />
+                                </div>
                             }
                         }
                     </div>
                 }
             }
+            </div>
         </div>
 
-        <input type="submit" value="Save" />
-        <a class="nav-link" asp-page="Index">Back</a>
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a class="btn btn-secondary" asp-page="Index">Back</a>
     </form>
 </div>
 
@@ -85,8 +96,8 @@
 
                 let label = $('#Word_Label').val().split('');
                 label.forEach((kanji, index) => {
-                    $('#reading-list').append('<div id="reading_' + index + '" class="form-group row"></div>');
-                    $("#reading_" + index).append('<label class="col-form-label col-md-1">' + kanji + ' :</label>');
+                    $('#reading-list').append('<div id="reading_' + index + '" class="form-row justify-content-md-end"></div>');
+                    $("#reading_" + index).append('<div class="col-form-label col-md-2"><label>' + kanji + ' :</label></div>')
 
                     if (kanji == '@Constants.Noma' & index > 0) {
                         $.when(current).then(function () {
@@ -133,13 +144,15 @@
         }
 
         function constructReadingForm(readings, index) {
-            $("#reading_" + index).append(constructSelect(readings, index));
-            $("#reading_" + index).append('<input type="hidden" name="Word.Readings[' + index + '].Order" value="' + (index + 1) + '" />');
+            var div = $('<div class="col-md-9">');
+            $(div).append(constructSelect(readings, index))
+            $(div).append('<input type="hidden" name="Word.Readings[' + index + '].Order" value="' + (index + 1) + '" />');
+            $("#reading_" + index).append(div);
         }
 
         // build label for noma case
         function constructLabel(index) {
-            $("#reading_" + index).append('<label id="noma_' + index + '" class="col-form-label col-md-3">' + $("#reading_" + (index - 1) + " select option:selected").text() + '</label>');
+            $("#reading_" + index).append('<div class="col-form-label col-md-9 pl-3"><label id="noma_' + index + '">' + $("#reading_" + (index - 1) + " select option:selected").text() + '</label></div>');
 
             $("#reading_" + (index - 1)).on('change', 'select', function () {
                 $("#noma_" + index).html($("#reading_" + (index - 1) + " select option:selected").text());
@@ -147,7 +160,7 @@
         }
 
         function constructSelect(elements, index) {
-            var html = '<select class="custom-select col-md-3" name="Word.Readings[' + index + '].ReadingId">';
+            var html = '<select class="form-control" name="Word.Readings[' + index + '].ReadingId">';
 
             elements.forEach((item, index) => {
                 html += '<option value="' + item.id + '">' + item.label + '</option>';

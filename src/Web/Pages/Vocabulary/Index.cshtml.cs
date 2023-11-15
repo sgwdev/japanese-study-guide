@@ -12,7 +12,7 @@ namespace Web.Pages.Vocabulary
     public class IndexModel : PageModel
     {
         private IRepository<Word> _repository { get; set; }
-        public List<Word> WordList { get; set; }
+        public List<Word> Words { get; set; }
 
         public IndexModel(IRepository<Word> wordRepository)
         {
@@ -21,7 +21,7 @@ namespace Web.Pages.Vocabulary
 
         public void OnGet()
         {
-            WordList = _repository.GetList();
+            Words = _repository.GetList();
         }
     }
 }
