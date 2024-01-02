@@ -24,5 +24,10 @@ namespace Infrastructure.Data.Specifications
         {
             Criteria = (k => k.Character == character);
         }
+
+        public KanjiWithReadingsSpecification(List<int> kanjiId) : this()
+        {
+            Criteria = (k => kanjiId.Contains(k.Id));
+        }
     }
 }

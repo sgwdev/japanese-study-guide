@@ -10,5 +10,7 @@ namespace Core.Entities.KanjiAggregate
     {
         public string Character { get; set; }
         public List<Reading> Readings { get; set; }
+
+        public List<KanjiList> KanjiLists { get; set; }
     }
 }

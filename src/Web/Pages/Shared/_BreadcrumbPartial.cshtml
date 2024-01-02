@@ -12,6 +12,7 @@
                     {
                         case "Kanjis":
                             <li class="breadcrumb-item @(currentRoute[main] == "Kanjis" ? "active" : "")" aria-current="page"><a asp-page="/Kanjis/Index" class="@(currentRoute[main] == "Kanjis" ? "text-reset" : null)">Kanji</a></li>
+                            <li class="breadcrumb-item @(currentRoute[main] == "Lists" ? "active" : "")" aria-current="page"><a asp-page="/Kanjis/Lists/Index" class="@(currentRoute[main] == "Lists" ? "text-reset" : null)">Lists</a></li>
                             break;
                         case "Vocabulary":
                             <li class="breadcrumb-item @(currentRoute[main] == "Vocabulary" ?  "active" : "")" aria-current="page"><a asp-page="/Vocabulary/Index" class="@(currentRoute[main] == "Vocabulary" ? "text-reset" : null)">Vocabulary</a></li>

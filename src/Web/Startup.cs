@@ -10,10 +10,12 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.WebEncoders;
 
 namespace Web
@@ -39,6 +41,12 @@ namespace Web
                 options.TextEncoderSettings = new TextEncoderSettings(
                     UnicodeRanges.BasicLatin,
                     UnicodeRanges.CjkSymbolsandPunctuation);
+            });
+
+            services.Configure<RouteOptions>(option =>
+            {
+                option.LowercaseUrls = true;
+                option.LowercaseQueryStrings = true;
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
