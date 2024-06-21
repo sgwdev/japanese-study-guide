@@ -1,0 +1,136 @@
+﻿@page
+@model Web.Pages.Vocabulary.Tests.QuickTestModel
+@using Core.Entities.VocabularyAggregate;
+@using Core;
+@{
+}
+
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-sm-4">
+            <h3>Quick Test</h3>
+        </div>
+        <div class="col-sm-4 text-right">
+            <a class="btn btn-secondary" asp-page="QuickTest">New Test</a>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="container">
+    <div>
+        <form method="post">
+            <h4>Kanji > Hiragana</h4>
+
+        @for(int i=0; i < Model.WordsToFillInHiragana.Count; i++)
+        {
+            <div class="row">
+                <div class="col-sm-2 col-form-label d-flex justify-content-end">
+                    <label>@Model.WordsToFillInHiragana[i].Label :</label>
+                </div>
+                <div class="col-md-auto">
+                    <div class="input-group mb-3 d-inline-flex align-items-center w-auto">
+                    @if (Model.WordsToFillInHiragana[i].SplittedWord[0].Length > 0)
+                    {
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">@Model.WordsToFillInHiragana[i].SplittedWord[0]</span>
+                        </div>
+                    }
+
+                    @{
+                        var inputSize = $"{25 * Model.WordsToFillInHiragana[i].Answer.Length + 15}px";
+                        var validationCss = Model.UserHiraganaAnswers != null ? Model.UserHiraganaAnswers[i] == Model.WordsToFillInHiragana[i].Answer ? "correct-input" : "wrong-input" : "";
+                    }
+                        <input type="text" class="form-control @validationCss" style="width:@inputSize;" asp-for="UserHiraganaAnswers[i]" />
+
+                    @if (Model.WordsToFillInHiragana[i].SplittedWord[1].Length > 0)
+                    {
+                        <div class="input-group-append">
+                            <span class="input-group-text">@Model.WordsToFillInHiragana[i].SplittedWord[1]</span>
+                        </div>
+                    }                  
+                    </div>
+                </div>
+                
+                @if (Model.KanjiToHiraganaFullAnswers != null && Model.UserHiraganaAnswers[i] != Model.WordsToFillInHiragana[i].Answer)
+                {
+                    <div class="col-md-2 col-form-label answer" style="display:none;">
+                        <label class="correct-input">@Model.KanjiToHiraganaFullAnswers[i]</label>
+                    </div>
+                }
+                
+                <input type="hidden" asp-for="WordsToFillInHiragana[i].WordId">
+                <input type="hidden" asp-for="WordsToFillInHiragana[i].SplitIndex">
+            </div>
+        }
+        
+            <hr />
+            <h4>Hiragana > Kanji</h4>
+
+        @for (int i = 0; i < Model.WordsToFillInKanji.Count; i++)
+        {
+            <div class="row">
+                <div class="col-sm-2 col-form-label d-flex justify-content-end">
+                    <label>@Model.WordsToFillInKanji[i].Label :</label>
+                </div>
+                <div class="col-md-auto">
+                    <div class="input-group mb-3 d-inline-flex align-items-center w-auto">
+                    @if (Model.WordsToFillInKanji[i].SplittedWord[0].Length > 0)
+                    {
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">@Model.WordsToFillInKanji[i].SplittedWord[0]</span>
+                        </div>
+                    }
+
+                    @{
+                        var inputSize = $"{25 * Model.WordsToFillInKanji[i].Answer.Length + 15}px";
+                        var validationCss = Model.UserKanjiAnswers != null ? Model.UserKanjiAnswers[i] == Model.WordsToFillInKanji[i].Answer ? "correct-input" : "wrong-input" : "";
+                    }
+
+                        <input type="text" class="form-control @validationCss" style="width:@inputSize;" asp-for="UserKanjiAnswers[i]" />
+                        
+                    @if (Model.WordsToFillInKanji[i].SplittedWord[1].Length > 0)
+                    {
+                        <div class="input-group-append">
+                            <span class="input-group-text">@Model.WordsToFillInKanji[i].SplittedWord[1]</span>
+                        </div>
+                    }
+                    </div>
+                </div>
+                
+                @if (Model.HiraganaToKanjiFullAnswers != null && Model.UserKanjiAnswers[i] != Model.WordsToFillInKanji[i].Answer)
+                {
+                    <div class="col-md-2 col-form-label answer" style="display:none;">
+                        <label class="correct-input">@Model.HiraganaToKanjiFullAnswers[i]</label>
+                    </div>
+                }
+
+                <input type="hidden" asp-for="WordsToFillInKanji[i].WordId">
+                <input type="hidden" asp-for="WordsToFillInKanji[i].SplitIndex">
+            </div>           
+        }
+        
+            <button type="submit" class="btn btn-primary">Submit</button>
+        
+        @if(Model.KanjiToHiraganaFullAnswers != null){
+            <button type="button" class="btn btn-success" id="displayAnswers" onclick="toggleAnswersDisplay()">Display answers</button>
+        }
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function toggleAnswersDisplay() {
+            if ($('.answer').is(":hidden")) {
+                $('.answer').show();
+                $('#displayAnswers').html('Hide answers');
+            }
+            else {
+                $('.answer').hide();
+                $('#displayAnswers').html('Display answers');
+            }
+        }
+    </script>
+}

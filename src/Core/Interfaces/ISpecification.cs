@@ -12,5 +12,10 @@ namespace Core.Interfaces
     {
         public Expression<Func<T, bool>> Criteria { get; }
         public List<Func<IQueryable<T>, IQueryable<T>>> Includes { get; }
+        
+        public int Take { get; }
+        public Expression<Func<T, int>> OrderBy { get; }
+        public bool IsRandomized { get; }
+        
     }
 }

@@ -15,6 +15,10 @@ namespace Infrastructure.Data.Specifications
         public Expression<Func<T, bool>> Criteria { get; protected set; }
         public List<Func<IQueryable<T>, IQueryable<T>>> Includes { get; } = new List<Func<IQueryable<T>, IQueryable<T>>>();
 
+        public int Take { get; protected set; }
+        public Expression<Func<T, int>> OrderBy { get; protected set; }
+        public bool IsRandomized { get; protected set; }
+
         public BaseSpecification()
         {
 

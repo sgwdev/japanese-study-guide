@@ -82,3 +82,13 @@ body {
 .large-furigana {
     font-size: 1rem;
 }
+
+.wrong-input {
+    color: #cc0033;
+    border-color: #cc0033;
+}
+
+.correct-input {
+    color: green;
+    border-color: green;
+}

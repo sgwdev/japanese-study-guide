@@ -18,9 +18,24 @@ namespace Infrastructure.Data.Extensions
                 source, (current, include) => include(current)
             );
 
-            if(specification.Criteria != null)
+            if (specification.IsRandomized)
+            {
+                query = query.OrderBy(x => EF.Functions.Random());
+            }
+
+            if (specification.Criteria != null)
             {
                 query = query.Where(specification.Criteria);
+            }
+
+            if (specification.Take > 0)
+            {
+                query = query.Take(specification.Take);
+            }
+
+            if (specification.OrderBy != null)
+            {
+                query = query.OrderBy(specification.OrderBy);
             }
 
             return query;
