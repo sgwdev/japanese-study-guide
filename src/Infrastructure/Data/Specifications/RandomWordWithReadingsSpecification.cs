@@ -21,5 +21,11 @@ namespace Infrastructure.Data.Specifications
         {
             Take = wordCount;
         }
+
+        public RandomWordWithReadingsSpecification(int wordListId, int wordCount) : this()
+        {
+            Criteria = (x => x.WordLists.Any(wl => wl.Id == wordListId));
+            Take = wordCount;
+        }
     }
 }

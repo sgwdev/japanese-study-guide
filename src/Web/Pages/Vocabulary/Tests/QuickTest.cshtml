@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}/{wordListId:int?}"
 @model Web.Pages.Vocabulary.Tests.QuickTestModel
 @using Core.Entities.VocabularyAggregate;
 @using Core;
@@ -7,11 +7,11 @@
 
 <div class="container">
     <div class="row justify-content-between">
-        <div class="col-sm-4">
+        <div class="col-md-4">
             <h3>Quick Test</h3>
         </div>
-        <div class="col-sm-4 text-right">
-            <a class="btn btn-secondary" asp-page="QuickTest">New Test</a>
+        <div class="col-md-4 text-right">
+            <a class="btn btn-secondary" asp-page="@Url.RouteUrl(ViewContext.RouteData.Values)">New Test</a>
         </div>
     </div>
 </div>
@@ -23,10 +23,18 @@
         <form method="post">
             <h4>Kanji > Hiragana</h4>
 
+        @if(Model.WordsToFillInHiragana.Count == 0){
+            <div class="row">
+                <div class="col-md-2 col-form-label d-flex justify-content-center">
+                    <label>-</label>
+                </div>
+            </div>
+        }
+        
         @for(int i=0; i < Model.WordsToFillInHiragana.Count; i++)
         {
             <div class="row">
-                <div class="col-sm-2 col-form-label d-flex justify-content-end">
+                <div class="col-md-2 col-form-label d-flex justify-content-end">
                     <label>@Model.WordsToFillInHiragana[i].Label :</label>
                 </div>
                 <div class="col-md-auto">
@@ -39,8 +47,16 @@
                     }
 
                     @{
-                        var inputSize = $"{25 * Model.WordsToFillInHiragana[i].Answer.Length + 15}px";
-                        var validationCss = Model.UserHiraganaAnswers != null ? Model.UserHiraganaAnswers[i] == Model.WordsToFillInHiragana[i].Answer ? "correct-input" : "wrong-input" : "";
+                        string inputSize = $"{25 * Model.WordsToFillInHiragana[i].Answer.Length + 15}px";
+                        string validationCss = "";
+
+                        if(Model.UserHiraganaAnswers != null){
+                            bool isCorrect = Model.UserHiraganaAnswers[i] == Model.WordsToFillInHiragana[i].Answer ? true : false;
+                            validationCss = isCorrect ? "correct-input" : "wrong-input";
+
+                            if(!isCorrect)
+                                Model.AtLeastOneMistake = true;
+                        }
                     }
                         <input type="text" class="form-control @validationCss" style="width:@inputSize;" asp-for="UserHiraganaAnswers[i]" />
 
@@ -68,10 +84,19 @@
             <hr />
             <h4>Hiragana > Kanji</h4>
 
+        @if (Model.WordsToFillInKanji.Count == 0)
+        {
+            <div class="row">
+                <div class="col-md-2 col-form-label d-flex justify-content-center">
+                    <label>-</label>
+                </div>
+            </div>
+        }
+
         @for (int i = 0; i < Model.WordsToFillInKanji.Count; i++)
         {
             <div class="row">
-                <div class="col-sm-2 col-form-label d-flex justify-content-end">
+                <div class="col-md-2 col-form-label d-flex justify-content-end">
                     <label>@Model.WordsToFillInKanji[i].Label :</label>
                 </div>
                 <div class="col-md-auto">
@@ -84,8 +109,16 @@
                     }
 
                     @{
-                        var inputSize = $"{25 * Model.WordsToFillInKanji[i].Answer.Length + 15}px";
-                        var validationCss = Model.UserKanjiAnswers != null ? Model.UserKanjiAnswers[i] == Model.WordsToFillInKanji[i].Answer ? "correct-input" : "wrong-input" : "";
+                        string inputSize = $"{25 * Model.WordsToFillInKanji[i].Answer.Length + 15}px";
+                        string validationCss = "";
+
+                        if(Model.UserKanjiAnswers != null){
+                            bool isCorrect = Model.UserKanjiAnswers[i] == Model.WordsToFillInKanji[i].Answer ? true : false;
+                            validationCss = isCorrect ? "correct-input" : "wrong-input";
+
+                            if(!isCorrect)
+                                Model.AtLeastOneMistake = true;
+                        }
                     }
 
                         <input type="text" class="form-control @validationCss" style="width:@inputSize;" asp-for="UserKanjiAnswers[i]" />
@@ -113,7 +146,7 @@
         
             <button type="submit" class="btn btn-primary">Submit</button>
         
-        @if(Model.KanjiToHiraganaFullAnswers != null){
+        @if(Model.AtLeastOneMistake){
             <button type="button" class="btn btn-success" id="displayAnswers" onclick="toggleAnswersDisplay()">Display answers</button>
         }
         </form>
@@ -132,5 +165,9 @@
                 $('#displayAnswers').html('Display answers');
             }
         }
+
+        $(".correct-input, .wrong-input").change(function () {
+            $(this).attr("class", "form-control");
+        });
     </script>
 }

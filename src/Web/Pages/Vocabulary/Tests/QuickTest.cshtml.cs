@@ -33,6 +33,7 @@ namespace Web.Pages.Vocabulary.Tests
 
         public List<string> HiraganaToKanjiFullAnswers { get; set; }
 
+        public bool AtLeastOneMistake { get; set; }
 
         private IRepository<Word> _repository { get; set; }
         private int _wordsPerExercice { get; set; }
@@ -49,31 +50,53 @@ namespace Web.Pages.Vocabulary.Tests
         public void OnGet()
         {
             List<Word> words = _repository.GetList(new RandomWordWithReadingsSpecification(_wordsPerExercice*2));
+            PrepareExercice(words);
+        }
+
+        public void OnGetList(int wordListId)
+        {
+            List<Word> words = _repository.GetList(new RandomWordWithReadingsSpecification(wordListId, _wordsPerExercice*2));
+            PrepareExercice(words);
+        }
+
+        private void PrepareExercice(List<Word> words)
+        {
+            if (words.Count / 2 < _wordsPerExercice)
+            {
+                _wordsPerExercice = words.Count == 1 ? 1 : words.Count / 2;
+            }
+
             WordsToFillInHiragana = GetKanjiToHiraganaExercise(words.Take(_wordsPerExercice).ToList());
-            WordsToFillInKanji = GetHiraganaToKanjiExercise(words.Skip(_wordsPerExercice).ToList());
+            WordsToFillInKanji = GetHiraganaToKanjiExercise(words.Skip(_wordsPerExercice).Take(_wordsPerExercice).ToList());
         }
 
         public IActionResult OnPost()
         {
-            List<int> hiraganaWordsId = WordsToFillInHiragana.Select(w => w.WordId).ToList();
-            List<int> hiraganaWordsSplitIndex = WordsToFillInHiragana.Select(w => w.SplitIndex).ToList();
+            if(WordsToFillInHiragana.Count > 0)
+            {
+                List<int> hiraganaWordsId = WordsToFillInHiragana.Select(w => w.WordId).ToList();
+                List<int> hiraganaWordsSplitIndex = WordsToFillInHiragana.Select(w => w.SplitIndex).ToList();
 
-            List<Word> hiraganaWords = _repository.GetList(new WordWithReadingsSpecification(hiraganaWordsId)).OrderBy(w => hiraganaWordsId.IndexOf(w.Id)).ToList();
-            WordsToFillInHiragana = GetKanjiToHiraganaExercise(hiraganaWords, hiraganaWordsSplitIndex);
+                List<Word> hiraganaWords = _repository.GetList(new WordWithReadingsSpecification(hiraganaWordsId)).OrderBy(w => hiraganaWordsId.IndexOf(w.Id)).ToList();
+                WordsToFillInHiragana = GetKanjiToHiraganaExercise(hiraganaWords, hiraganaWordsSplitIndex);
 
-            List<int> kanjiWordsId = WordsToFillInKanji.Select(w => w.WordId).ToList();
-            List<int> kanjiWordsSplitIndex = WordsToFillInKanji.Select(w => w.SplitIndex).ToList();
+                KanjiToHiraganaFullAnswers = hiraganaWords.Select(w => w.Pronunciation).ToList();
+            }
+            
+            if(WordsToFillInKanji.Count > 0)
+            {
+                List<int> kanjiWordsId = WordsToFillInKanji.Select(w => w.WordId).ToList();
+                List<int> kanjiWordsSplitIndex = WordsToFillInKanji.Select(w => w.SplitIndex).ToList();
 
-            List<Word> kanjiWords = _repository.GetList(new WordWithReadingsSpecification(kanjiWordsId)).OrderBy(w => kanjiWordsId.IndexOf(w.Id)).ToList();
-            WordsToFillInKanji = GetHiraganaToKanjiExercise(kanjiWords, kanjiWordsSplitIndex);
-
-            KanjiToHiraganaFullAnswers = hiraganaWords.Select(w => w.Pronunciation).ToList();
-            HiraganaToKanjiFullAnswers = kanjiWords.Select(w => w.Label).ToList();
+                List<Word> kanjiWords = _repository.GetList(new WordWithReadingsSpecification(kanjiWordsId)).OrderBy(w => kanjiWordsId.IndexOf(w.Id)).ToList();
+                WordsToFillInKanji = GetHiraganaToKanjiExercise(kanjiWords, kanjiWordsSplitIndex);
+                HiraganaToKanjiFullAnswers = kanjiWords.Select(w => w.Label).ToList();
+            }
 
             return Page();
         }
 
-        public List<WordToFill> GetKanjiToHiraganaExercise(List<Word> words, List<int> wordsSplitIndex = null, List<string> answers = null)
+        private List<WordToFill> GetKanjiToHiraganaExercise(List<Word> words, List<int> wordsSplitIndex = null, List<string> answers = null)
         {
             List<WordToFill> wordsToFill = new List<WordToFill>();
             WordToFill wordToFill;
@@ -81,7 +104,7 @@ namespace Web.Pages.Vocabulary.Tests
 
             foreach (Word word in words)
             {
-                if (word.Readings.First().Reading.TypeId == 3 || word.Label.Length == 1)
+                if (word.Readings.First().Reading.TypeId == Constants.ReadingTypes.Special || word.Label.Length == 1)
                 {
                     string label = string.IsNullOrEmpty(word.Translation) ? word.Label : $"{word.Label} ({word.Translation})";
                     wordToFill = new WordToFill(word.Id, label, word.Pronunciation);
@@ -103,7 +126,7 @@ namespace Web.Pages.Vocabulary.Tests
             return wordsToFill;
         }
 
-        public List<WordToFill> GetHiraganaToKanjiExercise(List<Word> words, List<int> wordsSplitIndex = null)
+        private List<WordToFill> GetHiraganaToKanjiExercise(List<Word> words, List<int> wordsSplitIndex = null)
         {
             List<WordToFill> wordsToFill = new List<WordToFill>();
             WordToFill wordToFill;
@@ -111,7 +134,7 @@ namespace Web.Pages.Vocabulary.Tests
             
             foreach (Word word in words)
             {
-                if (word.Readings.First().Reading.TypeId == 3 || word.Label.Length == 1)
+                if (word.Readings.First().Reading.TypeId == Constants.ReadingTypes.Special || word.Label.Length == 1)
                 {
                     string label = string.IsNullOrEmpty(word.Translation) ? word.Pronunciation : $"{word.Pronunciation} ({word.Translation})";
                     wordToFill = new WordToFill(word.Id, label, word.Label);
@@ -133,7 +156,7 @@ namespace Web.Pages.Vocabulary.Tests
         }
 
         // Splitting for Kanji -> Hiragana
-        public string[] GetHiraganaParts(Word word, int index)
+        private string[] GetHiraganaParts(Word word, int index)
         {
             if (word.Label[index] == Constants.Noma)
                 index--;

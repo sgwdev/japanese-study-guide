@@ -24,18 +24,21 @@
             <div class="card-header" id="heading-@wordList.Id">              
                     <div class="container">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md">
                                 <h2 class="mb-0">
                                     <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#wl-@wordList.Id" aria-expanded="false" aria-controls="wl-@wordList.Id">
                                         @wordList.Name <span class="badge badge-primary badge-pill">@wordList.Words.Count</span>
                                     </button>
                                 </h2>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-auto px-2">
                                 <a class="btn btn-primary" asp-page="Details" asp-route-id="@wordList.Id">Details</a>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-auto px-2">
                                 <a class="btn btn-primary" asp-page="Edit" asp-route-id="@wordList.Id">Edit</a>
+                            </div>
+                            <div class="col-md-auto px-2">
+                                <a class="btn btn-primary" asp-page="/Vocabulary/Tests/QuickTest" asp-page-handler="List" asp-route-wordListId="@wordList.Id">Quick Test</a>
                             </div>
                         </div>
                     </div>
